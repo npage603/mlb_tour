@@ -1,5 +1,9 @@
 # Import libraries
 import pandas as pd
+import os
+
+# Get the current working directory
+cwd = os.getcwd()
 
 # GLOBAL VARIABLES
 
@@ -9,6 +13,7 @@ gameLength = 5, #in hours
 gameBuffer = 2, #in hours
 avgSpeed = 40, #in mph
 cutoffDrive = 1000 #in miles
+
 
 # Stadium DataFrame
 # Create DataFrame of stadium info
@@ -45,3 +50,18 @@ stadiums = [
     ["Toronto Blue Jays","Rogers Centre","1 Blue Jay Way, Suite 3200, Toronto, ONT M5V 1J1",43.641653,-79.3917,'Midwest']
 ]
 stadium_df = pd.DataFrame(stadiums, columns = ['Team', 'Park', 'Address', 'Latitude','Longitude', 'Region'])
+
+# Weather DataFrame
+# Read the weather CSV that has already been manipulated and fix any zip codes that lost their leading zeros
+file_name = '/Source_Files/Daily_Rain_Probability_By_City.csv'
+rainProb_df = pd.read_csv(cwd + file_name).drop(columns=['Unnamed: 0','STATION'])
+rainProb_df["Zip Code"] = rainProb_df["Zip Code"].astype('str')
+rainProb_df["Zip Code"] = rainProb_df["Zip Code"].apply(lambda x: '0'+ x if len(x)==4 else x)
+
+# MLB Schedule DataFrame
+# Read the CSV to get the main DataFrame
+file_name = '/Source_Files/MLB_Schedule_2022.csv'
+baseball_df = pd.read_csv(cwd + file_name).drop(columns=['Unnamed: 0'])
+baseball_df['Date'] = pd.to_datetime(baseball_df['Date']).dt.normalize()
+
+

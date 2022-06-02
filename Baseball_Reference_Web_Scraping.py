@@ -110,6 +110,15 @@ schedule.loc[schedule.Home == 'Houston Astros', 'Dome Flag'] = int(1)
 schedule.loc[schedule.Home == 'Miami Marlins', 'Dome Flag'] = int(1)
 schedule.loc[schedule.Home == 'Tampa Bay Rays', 'Dome Flag'] = int(1)
 
+# Flag any doubleheaders
+doubleHeader = schedule.groupby(by=['Team','Date']).filter(lambda r: r['Park'].count() > 1)
+doubleHeader['Double Header Flag'] = 1
+doubleHeader = pd.DataFrame(doubleHeader,columns=['Datetime','Team','Double Header Flag']).rename(columns={"Datetime":"Datetime_DH", "Team":"Team_DH"})
+
+schedule = pd.merge(schedule, doubleHeader, left_on=['Datetime','Team'], right_on=['Datetime_DH','Team_DH'], how="left")
+schedule = pd.DataFrame(schedule, columns=["Date","Time","Datetime","Team","Park","Address","Latitude","Longitude","Region","Dome Flag","Last Game of Homestead Flag","Double Header Flag"])
+schedule['Double Header Flag'] = schedule['Double Header Flag'].fillna(0).astype('int64')
+
 # Remove games that are not going to be considered with algorithm
 # indexNames = schedule[(schedule['Spring Flag'] == int(1)) | (schedule['Special Flag'] == int(1)) | ((schedule['Last Game of Homestead Flag'] == int(1)) & (schedule['Dome Flag'] == int(0)))].index
 indexNames = schedule[(schedule['Spring Flag'] == int(1)) | (schedule['Special Flag'] == int(1))].index
