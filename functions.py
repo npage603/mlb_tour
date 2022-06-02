@@ -121,14 +121,14 @@ def short_long_drives(df, duration='short', dist_type='miles'):
         if dist_type == 'miles':
             return minDrive
         elif dist_type == 'minutes':
-            minTimeOnRoad = time_on_road(minDrive,param_dict["avgSpeed"])
+            minTimeOnRoad = time_on_road(minDrive,config.avgSpeed)
             return minTimeOnRoad
     elif duration == 'long':
         maxDrive = df['Distance From Last Park'].max()
         if dist_type == 'miles':
             return maxDrive
         elif dist_type == 'minutes':
-            maxTimeOnRoad = time_on_road(maxDrive,param_dict["avgSpeed"])
+            maxTimeOnRoad = time_on_road(maxDrive,config.avgSpeed)
             return maxTimeOnRoad
 
 #===================================================================================
